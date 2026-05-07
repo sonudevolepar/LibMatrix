@@ -120,6 +120,8 @@ const SideBar = ({ isSideBarOpen, setIsSideBarOpen, setSelectedComponent }) => {
             <span>Log Out</span>
           </button>
         </div>
+       
+
 
         {/* Close Sidebar */}
         <img

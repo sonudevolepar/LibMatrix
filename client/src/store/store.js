@@ -3,7 +3,7 @@ import authReducer from "./slices/authSlice";
 import popupupReducer from "./slices/popUpSlice";
 import  userReducer from "./slices/userSlice";
 import  bookReducer from "./slices/bookSlice";
-
+import  borrowReducer  from "./slices/borrowSlice";
 
 
 export const store = configureStore({
@@ -11,6 +11,7 @@ export const store = configureStore({
     auth: authReducer,
     popup: popupupReducer,
     user: userReducer,
-    book: bookReducer
+    book: bookReducer,
+    borrow: borrowReducer,
   },
 });

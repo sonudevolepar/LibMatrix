@@ -1,0 +1,112 @@
+/* Overlay (background blur + dark) */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Main Popup Box */
+.popup {
+  width: 420px;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  animation: popupFade 0.3s ease;
+}
+
+/* Header */
+.popup-header {
+  background: #000;
+  color: #fff;
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popup-header h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Close button */
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Body (form style like video) */
+.popup-body {
+  padding: 20px;
+}
+
+.popup-body p {
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+/* Label */
+.popup-body strong {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+/* Input style UI (video jaisa) */
+.popup-body p span,
+.popup-body p {
+  display: block;
+}
+
+/* Fake input box design */
+.popup-body p {
+  background: #f3f4f6;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Footer */
+.popup-footer {
+  padding: 15px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Close Button */
+.close-btn2 {
+  padding: 8px 16px;
+  background: #ddd;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.close-btn2:hover {
+  background: #bbb;
+}
+
+/* Animation */
+@keyframes popupFade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

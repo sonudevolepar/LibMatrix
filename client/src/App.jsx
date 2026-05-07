@@ -19,9 +19,11 @@ const App = () => {
 
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  useEffect(() => {
+ useEffect(() => {
+  if (isAuthenticated) {
     dispatch(getUser());
-  }, [dispatch]);
+  }
+}, [dispatch, isAuthenticated]);
 
   useEffect(() => {
     if (isAuthenticated && user?.role === "Admin") {

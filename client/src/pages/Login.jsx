@@ -17,7 +17,6 @@ const Login = () => {
     password: "",
   });
 
-  // 🔹 input change handler
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -25,13 +24,11 @@ const Login = () => {
     });
   };
 
-  // 🔹 submit handler
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(login(formData));
   };
 
-  // 🔹 side effects
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -44,60 +41,75 @@ const Login = () => {
     }
 
     if (isAuthenticated) {
-      navigate("/"); // home page
+      navigate("/");
     }
   }, [error, message, isAuthenticated, dispatch, navigate]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-6 rounded shadow-md w-80"
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+    <div className="flex h-screen">
 
-        {/* Email */}
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full p-2 mb-3 border rounded"
-          required
-        />
+      {/* 🔷 LEFT SIDE */}
+      <div className="w-1/2 flex flex-col justify-center items-center bg-white">
 
-        {/* Password */}
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full p-2 mb-3 border rounded"
-          required
-        />
+        <h2 className="text-2xl font-bold mb-2">Welcome Back !!</h2>
+        <p className="text-gray-500 mb-6">
+          Please enter your credentials to log in
+        </p>
 
-        {/* Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-black text-white py-2 rounded"
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+        <form onSubmit={handleLogin} className="w-80">
 
-        {/* Links */}
-        <div className="flex justify-between mt-3 text-sm">
-          <Link to="/password/forgot" className="text-blue-500">
-            Forgot Password?
-          </Link>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full border p-2 mb-3 rounded"
+            required
+          />
 
-          <Link to="/register" className="text-blue-500">
-            Register
-          </Link>
-        </div>
-      </form>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full border p-2 mb-3 rounded"
+            required
+          />
+
+          <div className="text-sm mb-3">
+            <Link to="/password/forgot" className="text-blue-500">
+              Forgot Password?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white py-2 rounded"
+          >
+            {loading ? "Signing in..." : "SIGN IN"}
+          </button>
+
+        </form>
+      </div>
+
+      {/* 🔷 RIGHT SIDE (VIDEO STYLE BLACK PANEL) */}
+      <div className="w-1/2 bg-black text-white flex flex-col justify-center items-center rounded-l-[80px]">
+
+        <h1 className="text-3xl font-bold mb-2">BookWorm</h1>
+        <p className="text-gray-300 mb-6">
+          New to our platform? Sign up now.
+        </p>
+
+        <Link to="/register">
+          <button className="border border-white px-6 py-2 rounded hover:bg-white hover:text-black transition">
+            SIGN UP
+          </button>
+        </Link>
+
+      </div>
     </div>
   );
 };

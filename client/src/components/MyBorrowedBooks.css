@@ -1,0 +1,147 @@
+.dashboard {
+  display: flex;
+  height: 100vh;
+  background: #f5f6fa;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 230px;
+  background: #000;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.logo {
+  margin-bottom: 30px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 15px 0;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.sidebar li.active {
+  opacity: 1;
+  font-weight: bold;
+}
+
+.logout {
+  cursor: pointer;
+}
+
+/* Main */
+.main {
+  flex: 1;
+  padding: 20px 30px;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.add-btn {
+  background: #1f2937;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.top-actions input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Card */
+.content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  background: #f3f4f6;
+  padding: 14px;
+}
+
+td {
+  padding: 14px;
+  border-top: 1px solid #eee;
+}
+
+tr:hover {
+  background: #f9fafb;
+}
+
+/* Status */
+.status {
+  padding: 5px 12px;
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+}
+
+.available {
+  background: green;
+}
+
+.out {
+  background: red;
+}
+
+/* Buttons */
+.edit-btn {
+  margin-right: 5px;
+  background: #e5e7eb;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+}
+
+.loading {
+  text-align: center;
+}

@@ -1,76 +1,151 @@
 import React, { useState } from "react";
 import logo from "../assets/black-logo.png";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { register } from "../store/slices/authSlice"; // make sure correct path
+
+import { register } from "../store/slices/authSlice";
 
 const Register = () => {
+  const dispatch = useDispatch();
+  const navigateTo = useNavigate();
+
+  const { loading, error, message } = useSelector(
+    (state) => state.auth
+  );
+
+  // ================= STATES =================
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const dispatch = useDispatch();
-  const navigateTo = useNavigate();
+  // ================= REGISTER =================
 
-  const { loading, error, message, isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
-
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
-    const data = { name, email, password };
+    try {
+      const data = {
+        name,
+        email,
+        password,
+      };
 
-    dispatch(register(data));
+      // 🔥 REGISTER API
+      // const response = await dispatch(register(data));
+
+      // console.log(response);
+
+      // // 🔥 OTP PAGE REDIRECT
+      // if (response?.success) {
+      //   navigateTo(`/otp/${email}`);
+      // }
+
+      const response = await dispatch(register(data));
+
+if (response?.success) {
+  navigateTo(`/otp/${email}`);
+}
+
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  // redirect after success
-  if (isAuthenticated) {
-    navigateTo("/");
-  }
 
   return (
     <div style={styles.container}>
+
       <div style={styles.card}>
-        <img src={logo} alt="logo" style={styles.logo} />
 
-        <h2>Register</h2>
+        {/* LOGO */}
 
-        <form onSubmit={handleRegister} style={styles.form}>
+        <img
+          src={logo}
+          alt="logo"
+          style={styles.logo}
+        />
+
+        <h2 style={styles.heading}>
+          Register
+        </h2>
+
+        {/* FORM */}
+
+        <form
+          onSubmit={handleRegister}
+          style={styles.form}
+        >
+
+          {/* NAME */}
+
           <input
             type="text"
             placeholder="Enter Name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
             required
             style={styles.input}
           />
+
+          {/* EMAIL */}
 
           <input
             type="email"
             placeholder="Enter Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
             required
             style={styles.input}
           />
+
+          {/* PASSWORD */}
 
           <input
             type="password"
             placeholder="Enter Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
             required
             style={styles.input}
           />
 
-          <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? "Registering..." : "Register"}
+          {/* BUTTON */}
+
+          <button
+            type="submit"
+            style={styles.button}
+            disabled={loading}
+          >
+            {loading
+              ? "Registering..."
+              : "Register"}
           </button>
+
         </form>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {message && <p style={{ color: "green" }}>{message}</p>}
+        {/* ERROR */}
+
+        {error && (
+          <p style={styles.error}>
+            {error}
+          </p>
+        )}
+
+        {/* SUCCESS */}
+
+        {message && (
+          <p style={styles.success}>
+            {message}
+          </p>
+        )}
+
       </div>
     </div>
   );
@@ -78,43 +153,74 @@ const Register = () => {
 
 export default Register;
 
-// Simple CSS-in-JS
+// ================= CSS =================
+
 const styles = {
+
   container: {
     height: "100vh",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
+    background:
+      "linear-gradient(to right, #f5f7fa, #e4e8eb)",
   },
+
   card: {
-    width: "350px",
-    padding: "30px",
+    width: "380px",
+    padding: "35px",
     background: "#fff",
-    borderRadius: "10px",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+    borderRadius: "16px",
+    boxShadow:
+      "0 10px 30px rgba(0,0,0,0.1)",
     textAlign: "center",
   },
+
   logo: {
-    width: "80px",
+    width: "90px",
     marginBottom: "10px",
   },
+
+  heading: {
+    marginBottom: "20px",
+    fontSize: "32px",
+    fontWeight: "700",
+    color: "#111827",
+  },
+
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: "10px",
+    gap: "14px",
   },
+
   input: {
-    padding: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
+    padding: "14px",
+    borderRadius: "10px",
+    border: "1px solid #d1d5db",
+    fontSize: "16px",
+    outline: "none",
   },
+
   button: {
-    padding: "10px",
-    backgroundColor: "black",
+    padding: "14px",
+    background:
+      "linear-gradient(to right, #111827, #1f2937)",
     color: "white",
     border: "none",
-    borderRadius: "5px",
+    borderRadius: "10px",
     cursor: "pointer",
+    fontSize: "18px",
+    fontWeight: "600",
+  },
+
+  error: {
+    color: "red",
+    marginTop: "12px",
+  },
+
+  success: {
+    color: "green",
+    marginTop: "12px",
   },
 };

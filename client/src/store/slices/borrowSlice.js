@@ -4,6 +4,28 @@ import axios from "axios";
 // 👉 BASE URL (change according to your backend)
 const BASE_URL = "http://localhost:4000/api/v1/borrow/my-borrowed-books";
 
+
+//recordBorrowBook
+export const recordBorrowBook = createAsyncThunk(
+  "borrow/recordBorrowBook",
+  async ({ email, id }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}/borrow/record-borrow-book/69e4603ef9d63a06f830e152/${id}`,
+        { email },
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      return data.message;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || err.message
+      );
+    }
+  }
+);
 // ==============================
 // 📌 GET USER BORROWED BOOKS
 // ==============================

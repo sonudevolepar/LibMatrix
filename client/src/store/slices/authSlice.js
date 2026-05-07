@@ -61,8 +61,19 @@ export const register = (formData) => async (dispatch) => {
     });
 
     dispatch(success(res.data));
+
+    // 🔥 IMPORTANT
+    return res.data;
+
   } catch (error) {
-    dispatch(failed(error.response?.data?.message || "Register failed"));
+
+    dispatch(
+      failed(
+        error.response?.data?.message || "Register failed"
+      )
+    );
+
+    return error.response?.data;
   }
 };
 
