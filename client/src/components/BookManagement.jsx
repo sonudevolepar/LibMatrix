@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   fetchBooks,
   deleteBook,
@@ -9,14 +10,17 @@ import {
 import "./BookManagement.css";
 
 const BookManagement = () => {
+
   const dispatch = useDispatch();
 
-  const { books, loading } = useSelector((state) => state.book);
+  const { books, loading } = useSelector(
+    (state) => state.book
+  );
 
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-  // 🔥 FORM DATA
+  // FORM STATE
   const [formData, setFormData] = useState({
     title: "",
     author: "",
@@ -26,21 +30,22 @@ const BookManagement = () => {
     bookImage: null,
   });
 
-  // 🔥 IMAGE PREVIEW
+  // IMAGE PREVIEW
   const [preview, setPreview] = useState("");
 
+  // FETCH BOOKS
   useEffect(() => {
     dispatch(fetchBooks());
   }, [dispatch]);
 
-  // 🔍 SEARCH FILTER
+  // SEARCH FILTER
   const filteredBooks = books?.filter((book) =>
     (book.title || "")
       .toLowerCase()
       .includes(search.toLowerCase())
   );
 
-  // 🔥 HANDLE INPUT CHANGE
+  // HANDLE INPUT CHANGE
   const handleChange = (e) => {
 
     // IMAGE
@@ -53,9 +58,11 @@ const BookManagement = () => {
         bookImage: file,
       });
 
-      // 🔥 IMAGE PREVIEW
+      // IMAGE PREVIEW
       if (file) {
-        setPreview(URL.createObjectURL(file));
+        setPreview(
+          URL.createObjectURL(file)
+        );
       }
 
     } else {
@@ -68,8 +75,9 @@ const BookManagement = () => {
     }
   };
 
-  // 🔥 SUBMIT
+  // SUBMIT FORM
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     const data = new FormData();
@@ -80,15 +88,18 @@ const BookManagement = () => {
     data.append("quantity", formData.quantity);
     data.append("price", formData.price);
 
-    // 🔥 IMAGE
-    data.append("bookImage", formData.bookImage);
+    // IMPORTANT
+    data.append(
+      "image",
+      formData.bookImage
+    );
 
     await dispatch(addBook(data));
 
-    // 🔥 REFRESH BOOKS
+    // REFRESH
     dispatch(fetchBooks());
 
-    // 🔥 RESET
+    // RESET
     setFormData({
       title: "",
       author: "",
@@ -98,6 +109,8 @@ const BookManagement = () => {
       bookImage: null,
     });
 
+    // console.log(bookImage);
+
     setPreview("");
 
     setShowModal(false);
@@ -106,7 +119,7 @@ const BookManagement = () => {
   return (
     <div className="dashboard">
 
-      {/* ================= SIDEBAR ================= */}
+      {/* SIDEBAR */}
 
       <div className="sidebar">
 
@@ -119,18 +132,22 @@ const BookManagement = () => {
 
         <ul>
           <li>📊 Dashboard</li>
-          <li className="active">📚 Books</li>
+          <li className="active">
+            📚 Books
+          </li>
           <li>🏷 Catalog</li>
           <li>👥 Users</li>
           <li>👤 Add New Admin</li>
           <li>⚙ User Credentials</li>
         </ul>
 
-        <div className="logout">🚪 Log Out</div>
+        <div className="logout">
+          🚪 Log Out
+        </div>
 
       </div>
 
-      {/* ================= MAIN ================= */}
+      {/* MAIN */}
 
       <div className="main">
 
@@ -144,7 +161,9 @@ const BookManagement = () => {
 
             <button
               className="add-btn"
-              onClick={() => setShowModal(true)}
+              onClick={() =>
+                setShowModal(true)
+              }
             >
               + Add Book
             </button>
@@ -153,19 +172,26 @@ const BookManagement = () => {
               type="text"
               placeholder="Search books..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) =>
+                setSearch(e.target.value)
+              }
             />
 
           </div>
         </div>
 
-        {/* ================= TABLE ================= */}
+        {/* TABLE */}
 
         <div className="content">
 
           {loading ? (
-            <p className="loading">Loading...</p>
+
+            <p className="loading">
+              Loading...
+            </p>
+
           ) : (
+
             <table>
 
               <thead>
@@ -183,101 +209,128 @@ const BookManagement = () => {
               <tbody>
 
                 {filteredBooks?.length > 0 ? (
-                  filteredBooks.map((book, index) => (
 
-                    <tr key={book._id}>
+                  filteredBooks.map(
+                    (book, index) => (
 
-                      <td>{index + 1}</td>
+                      <tr key={book._id}>
 
-                      {/* 🔥 BOOK IMAGE + TITLE */}
+                        <td>
+                          {index + 1}
+                        </td>
 
-                      <td>
+                        {/* BOOK INFO */}
 
-                        <div className="book-info">
+                        <td>
 
-                          <img
-                            src={
-                              book.bookImage?.url ||
-                              "https://dummyimage.com/200x300/000/fff&text=Book"
-                            }
-                            alt={book.title}
-                            className="book-img"
-                          />
+                          <div className="book-info">
 
-                          <div>
-                            <h4 className="book-name">
-                              {book.title}
-                            </h4>
+                            <img
+                              src={
+                                book.bookImage
+                                  ?.url ||
+                                "https://dummyimage.com/200x300/000/fff&text=Book"
+                              }
+                              alt={book.title}
+                              className="book-img"
+                            />
 
-                            <p className="book-desc">
-                              {book.description}
-                            </p>
+                            <div>
+
+                              <h4 className="book-name">
+                                {book.title}
+                              </h4>
+
+                              <p className="book-desc">
+                                {
+                                  book.description
+                                }
+                              </p>
+
+                            </div>
+
                           </div>
 
-                        </div>
+                        </td>
 
-                      </td>
+                        <td>
+                          {book.author}
+                        </td>
 
-                      <td>{book.author}</td>
+                        <td>
+                          {book.quantity}
+                        </td>
 
-                      <td>{book.quantity}</td>
+                        <td>
+                          ₹{book.price}
+                        </td>
 
-                      <td>₹{book.price}</td>
+                        {/* STATUS */}
 
-                      {/* STATUS */}
+                        <td>
 
-                      <td>
-                        <span
-                          className={
-                            book.quantity > 0
-                              ? "status available"
-                              : "status out"
-                          }
-                        >
-                          {book.quantity > 0
-                            ? "Available"
-                            : "Out Of Stock"}
-                        </span>
-                      </td>
+                          <span
+                            className={
+                              book.quantity > 0
+                                ? "status available"
+                                : "status out"
+                            }
+                          >
+                            {book.quantity > 0
+                              ? "Available"
+                              : "Out Of Stock"}
+                          </span>
 
-                      {/* ACTION */}
+                        </td>
 
-                      <td>
+                        {/* DELETE */}
 
-                        <button
-                          className="delete-btn"
-                          onClick={() =>
-                            dispatch(deleteBook(book._id))
-                          }
-                        >
-                          🗑
-                        </button>
+                        <td>
 
-                      </td>
+                          <button
+                            className="delete-btn"
+                            onClick={() =>
+                              dispatch(
+                                deleteBook(
+                                  book._id
+                                )
+                              )
+                            }
+                          >
+                            🗑
+                          </button>
 
-                    </tr>
+                        </td>
 
-                  ))
+                      </tr>
+                    )
+                  )
+
                 ) : (
+
                   <tr>
+
                     <td
                       colSpan="7"
                       className="no-data"
                     >
                       No Books Found
                     </td>
+
                   </tr>
+
                 )}
 
               </tbody>
 
             </table>
+
           )}
 
         </div>
       </div>
 
-      {/* ================= MODAL ================= */}
+      {/* MODAL */}
 
       {showModal && (
 
@@ -334,7 +387,7 @@ const BookManagement = () => {
                 required
               />
 
-              {/* 🔥 IMAGE INPUT */}
+              {/* IMAGE */}
 
               <input
                 type="file"
@@ -344,14 +397,16 @@ const BookManagement = () => {
                 required
               />
 
-              {/* 🔥 IMAGE PREVIEW */}
+              {/* PREVIEW */}
 
               {preview && (
+
                 <img
                   src={preview}
                   alt="preview"
                   className="preview-img"
                 />
+
               )}
 
               <div className="modal-buttons">
@@ -366,7 +421,9 @@ const BookManagement = () => {
                 <button
                   type="button"
                   className="cancel-btn"
-                  onClick={() => setShowModal(false)}
+                  onClick={() =>
+                    setShowModal(false)
+                  }
                 >
                   Cancel
                 </button>

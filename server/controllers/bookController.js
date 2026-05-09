@@ -8,6 +8,9 @@ import { v2 as cloudinary } from "cloudinary";
 export const addBook = catchAsyncErrors(
   async (req, res, next) => {
 
+    console.log(req.body);
+    console.log(req.file);
+
     const {
       title,
       author,
@@ -16,6 +19,7 @@ export const addBook = catchAsyncErrors(
       quantity,
     } = req.body;
 
+    // VALIDATION
     if (
       !title ||
       !author ||
@@ -31,7 +35,7 @@ export const addBook = catchAsyncErrors(
       );
     }
 
-    // 🔥 IMAGE CHECK
+    // IMAGE CHECK
     if (!req.file) {
       return next(
         new ErrorHandler(
@@ -41,7 +45,7 @@ export const addBook = catchAsyncErrors(
       );
     }
 
-    // 🔥 CLOUDINARY UPLOAD
+    // CLOUDINARY UPLOAD
     const result = await cloudinary.uploader.upload(
       req.file.path,
       {
@@ -49,7 +53,9 @@ export const addBook = catchAsyncErrors(
       }
     );
 
-    // 🔥 SAVE BOOK
+    console.log(result);
+      
+    // CREATE BOOK
     const book = await Book.create({
       title,
       author,
@@ -73,8 +79,8 @@ export const addBook = catchAsyncErrors(
 
 // ================= GET ALL BOOKS =================
 
-export const getAllBooks =
-  catchAsyncErrors(async (req, res, next) => {
+export const getAllBooks = catchAsyncErrors(
+  async (req, res, next) => {
 
     const books = await Book.find();
 
@@ -82,16 +88,17 @@ export const getAllBooks =
       success: true,
       books,
     });
-  });
+  }
+);
 
 // ================= DELETE BOOK =================
 
-export const deleteBook =
-  catchAsyncErrors(async (req, res, next) => {
+export const deleteBook = catchAsyncErrors(
+  async (req, res, next) => {
 
-    const { id } = req.params;
-
-    const book = await Book.findById(id);
+    const book = await Book.findById(
+      req.params.id
+    );
 
     if (!book) {
       return next(
@@ -102,10 +109,20 @@ export const deleteBook =
       );
     }
 
+    // cloudinary image delete
+    if (book.bookImage?.public_id) {
+
+      await cloudinary.uploader.destroy(
+        book.bookImage.public_id
+      );
+
+    }
+
     await book.deleteOne();
 
     res.status(200).json({
       success: true,
-      message: "Book deleted successfully.",
+      message: "Book deleted successfully",
     });
-  });
+  }
+);

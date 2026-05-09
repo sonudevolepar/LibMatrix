@@ -130,6 +130,9 @@ export const addBook = (data) => async (dispatch) => {
       data,
       {
         withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }
     );
 
@@ -139,14 +142,14 @@ export const addBook = (data) => async (dispatch) => {
 
     dispatch(fetchBooks());
 
-  } catch (err) {
+  } catch (error) {
 
-    console.log(err.response?.data);
+    console.log(error.response?.data);
 
     dispatch(bookSlice.actions.addBookFailed());
 
     toast.error(
-      err.response?.data?.message || "Error"
+      error.response?.data?.message || "Error"
     );
   }
 };
@@ -155,19 +158,36 @@ export const addBook = (data) => async (dispatch) => {
 // ❌ DELETE BOOK
 // ============================
 export const deleteBook = (id) => async (dispatch) => {
-  try {
-    dispatch(bookSlice.actions.deleteBookRequest());
 
-    const res = await axios.delete(
-      `${API}/delete/${id}`,
-      { withCredentials: true }
+  try {
+
+    dispatch(
+      bookSlice.actions.deleteBookRequest()
     );
 
-    dispatch(bookSlice.actions.deleteBookSuccess(id));
-    toast.success(res.data.message || "Deleted");
-  } catch (err) {
-    dispatch(bookSlice.actions.deleteBookFailed());
-    toast.error(err?.response?.data?.message || "Error");
+    const { data } = await axios.delete(
+      `${API}/delete/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+
+    dispatch(
+      bookSlice.actions.deleteBookSuccess(id)
+    );
+
+    toast.success(data.message);
+
+  } catch (error) {
+
+    dispatch(
+      bookSlice.actions.deleteBookFailed()
+    );
+
+    toast.error(
+      error.response?.data?.message ||
+      "Delete failed"
+    );
   }
 };
 

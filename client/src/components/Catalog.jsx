@@ -68,7 +68,7 @@ const Catalog = () => {
                   className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition"
                 >
                   <img
-                    src={book.image || "https://via.placeholder.com/200"}
+                    src={book.bookImage?.url || "https://via.placeholder.com/200"}
                     alt={book.title}
                     className="w-full h-44 object-cover rounded mb-3"
                   />

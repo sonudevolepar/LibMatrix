@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const bookSchema = new mongoose.Schema(
   {
     title: {
@@ -6,31 +7,50 @@ const bookSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
     author: {
       type: String,
       required: true,
       trim: true,
     },
+
     description: {
       type: String,
       required: true,
     },
+
     price: {
       type: Number,
       required: true,
-  },
-  quantity: {
+    },
+
+    quantity: {
       type: Number,
       required: true,
+    },
+
+    availability: {
+      type: Boolean,
+      default: true,
+    },
+
+    // ✅ ADD THIS
+    bookImage: {
+      public_id: {
+        type: String,
+      },
+
+      url: {
+        type: String,
+      },
+    },
   },
-  availability: {
-    type: Boolean,
-    default: true,
-  },
-},
-{
-  timestamps: true,
-}
+  {
+    timestamps: true,
+  }
 );
 
-export const Book = mongoose.model("Book", bookSchema);
+export const Book = mongoose.model(
+  "Book",
+  bookSchema
+);

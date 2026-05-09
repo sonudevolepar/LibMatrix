@@ -1,5 +1,6 @@
 import express from "express";
 import { isAuthenticated, isAuthorized } from "../middlewares/authMiddleware.js";
+import { upload } from "../middlewares/multer.js";
 
 import {
   addBook,
@@ -9,7 +10,13 @@ import {
 
 const router = express.Router();
 
-router.post("/admin/add", isAuthenticated, isAuthorized("Admin"), addBook);
+router.post(
+  "/admin/add",
+  isAuthenticated,
+  isAuthorized("Admin"),
+  upload.single("image"),
+  addBook
+);
 
 router.get("/all", isAuthenticated, getAllBooks);
 
@@ -19,6 +26,5 @@ router.delete(
   isAuthorized("Admin"),
   deleteBook
 );
-
 
 export default router;
