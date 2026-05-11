@@ -1,140 +1,181 @@
 import React, { useEffect } from "react";
-import logo_with_title from "../assets/logo-with-title.png";
-import logoutIcon from "../assets/logout.png";
-import closeIcon from "../assets/white-close-icon.png";
-import dashboardIcon from "../assets/element.png";
-import bookIcon from "../assets/book.png";
-import catalogIcon from "../assets/catalog.png";
-import settingIcon from "../assets/setting-white.png";
-import usersIcon from "../assets/people.png";
-import { RiAdminFill } from "react-icons/ri";
+import {
+  LayoutDashboard,
+  BookOpen,
+  Users,
+  Settings,
+  LogOut,
+  Bot,
+  Library,
+} from "lucide-react";
+
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { toast } from "react-toastify";
-import { toggleAddNewAdminPopup,toggleSettingPopup } from "../store/slices/popUpSlice";
+import {
+  toggleAddNewAdminPopup,
+  toggleSettingPopup,
+} from "../store/slices/popUpSlice";
+
 import AddNewAdmin from "../popups/AddNewAdmin";
 import SettingPopup from "../popups/SettingPopup.jsx";
 
-const SideBar = ({ isSideBarOpen, setIsSideBarOpen, setSelectedComponent }) => {
+const SideBar = ({
+  isSideBarOpen,
+  setIsSideBarOpen,
+  selectedComponent,
+  setSelectedComponent,
+}) => {
   const dispatch = useDispatch();
 
-  const { addNewAdminPopup, settingPopup } = useSelector((state) => state.popup);
+  const { addNewAdminPopup, settingPopup } = useSelector(
+    (state) => state.popup
+  );
+
   const { error, message, user, isAuthenticated } = useSelector(
     (state) => state.auth
   );
-
-  const handleLogout = () => {
-    dispatch(logout());
-  };
 
   useEffect(() => {
     if (error) toast.error(error);
     if (message) toast.success(message);
   }, [error, message]);
 
-  // const isOpen = useSelector((state) => state.popup.isSettingOpen);
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
+  // 🎯 reusable button
+  const MenuItem = ({ icon: Icon, label, value, onClick }) => {
+    const active = selectedComponent === value;
+
+    return (
+      <button
+        onClick={onClick}
+        className={`group w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300
+        ${
+          active
+            ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
+            : "text-gray-300 hover:bg-white/10 hover:text-white"
+        }`}
+      >
+        <Icon
+          className={`w-5 h-5 ${
+            active ? "text-white" : "text-gray-400 group-hover:text-white"
+          }`}
+        />
+        <span className="font-medium">{label}</span>
+      </button>
+    );
+  };
 
   return (
     <>
       <aside
-        className={`${isSideBarOpen ? "left-0" : "-left-full"
-          } z-10 transition-all duration-700 md:relative md:left-0 flex w-64 bg-black text-white flex-col h-full`}
-        style={{ position: "fixed" }}
+        className={`${
+          isSideBarOpen ? "left-0" : "-left-full"
+        } md:left-0 fixed z-20 w-64 h-full backdrop-blur-xl bg-black/80 border-r border-white/10 text-white flex flex-col transition-all duration-500`}
       >
-        {/* Logo */}
-        <div className="px-6 py-4 my-8">
-          <img src={logo_with_title} alt="logo" />
+        {/* 🔥 LOGO */}
+        <div className="px-6 py-6 border-b border-white/10">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            Library AI
+          </h1>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-6 space-y-2">
+        {/* 🚀 MENU */}
+        <nav className="flex-1 px-4 py-6 space-y-2">
 
-          <button
-            className="w-full py-2 font-medium flex items-center space-x-2"
+          <MenuItem
+            icon={LayoutDashboard}
+            label="Dashboard"
+            value="Dashboard"
             onClick={() => setSelectedComponent("Dashboard")}
-          >
-            <img src={dashboardIcon} alt="icon" />
-            <span>Dashboard</span>
-          </button>
+          />
 
-          <button
-            className="w-full py-2 font-medium flex items-center space-x-2"
+          <MenuItem
+            icon={BookOpen}
+            label="Books"
+            value="Books"
             onClick={() => setSelectedComponent("Books")}
-          >
-            <img src={bookIcon} alt="icon" />
-            <span>Books</span>
-          </button>
+          />
 
-          <button
-            className="w-full py-2 font-medium flex items-center space-x-2"
+          <MenuItem
+            icon={Library}
+            label="Catalog"
+            value="Catalog"
             onClick={() => setSelectedComponent("Catalog")}
-          >
-            <img src={catalogIcon} alt="icon" />
-            <span>Catalog</span>
-          </button>
+          />
 
-          <button
-            className="w-full py-2 font-medium flex items-center space-x-2"
+          <MenuItem
+            icon={Users}
+            label="Users"
+            value="Users"
             onClick={() => setSelectedComponent("Users")}
-          >
-            <img src={usersIcon} alt="icon" />
-            <span>Users</span>
-          </button>
+          />
 
-          {/* Add Admin */}
-          <button
-            className="w-full py-2 font-medium flex items-center space-x-2"
-            onClick={() => dispatch(toggleAddNewAdminPopup())}
-          >
-            <RiAdminFill className="w-6 h-6" />
-            <span>Add New Admin</span>
-          </button>
+          {/* 🤖 AI Assistant (NEW 🔥🔥🔥) */}
+          <MenuItem
+            icon={Bot}
+            label="AI Assistant"
+            value="AI"
+            onClick={() => setSelectedComponent("AI")}
+          />
 
-          {/* User Only */}
+          {/* 👤 User Only */}
           {isAuthenticated && user?.role === "User" && (
-            <button
-              className="w-full py-2 font-medium flex items-center space-x-2"
-              onClick={() => setSelectedComponent("My Borrowed Books")}
-            >
-              <img src={catalogIcon} alt="icon" />
-              <span>My Borrowed Books</span>
-            </button>
+            <MenuItem
+              icon={Library}
+              label="My Borrowed Books"
+              value="My Borrowed Books"
+              onClick={() =>
+                setSelectedComponent("My Borrowed Books")
+              }
+            />
           )}
 
-          <button
+          {/* ⚙️ SETTINGS */}
+          <MenuItem
+            icon={Settings}
+            label="Settings"
+            value="Settings"
             onClick={() => dispatch(toggleSettingPopup())}
-            className="w-full py-2 font-medium flex items-center space-x-2"
-          >
-            <img src={settingIcon} alt="icon" />
-            <span>User Credentials</span>
-          </button>
+          />
+
+          {/* 👑 ADD ADMIN */}
+          {user?.role === "Admin" && (
+            <button
+              onClick={() => dispatch(toggleAddNewAdminPopup())}
+              className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-semibold hover:scale-105 transition"
+            >
+              + Add Admin
+            </button>
+          )}
         </nav>
 
-        {/* Logout */}
-        <div className="px-6 py-4">
+        {/* 🚪 LOGOUT */}
+        <div className="p-4 border-t border-white/10">
           <button
-            className="py-2 font-medium flex items-center justify-center space-x-3 mx-auto"
             onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-red-500/90 hover:bg-red-600 transition"
           >
-            <img src={logoutIcon} alt="icon" />
-            <span>Log Out</span>
+            <LogOut className="w-5 h-5" />
+            Logout
           </button>
         </div>
-       
 
-
-        {/* Close Sidebar */}
-        <img
-          src={closeIcon}
-          alt="icon"
-          onClick={() => setIsSideBarOpen(!isSideBarOpen)}
-          className="absolute top-0 right-4 mt-4 block md:hidden cursor-pointer"
-        />
+        {/* ❌ MOBILE CLOSE */}
+        <button
+          onClick={() => setIsSideBarOpen(false)}
+          className="md:hidden absolute top-4 right-4 text-white text-xl"
+        >
+          ✕
+        </button>
       </aside>
 
+      {/* POPUPS */}
       {addNewAdminPopup && <AddNewAdmin />}
-      {settingPopup && <SettingPopup/> }
-      {/* {isOpen && <SettingPopup />} */}
+      {settingPopup && <SettingPopup />}
     </>
   );
 };

@@ -3,37 +3,38 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
-import Sidebar from "../layout/SideBar";   // ✅ fixed
+import Sidebar from "../layout/SideBar";
 import UserDashboard from "../components/UserDashboard";
 import AdminDashboard from "../components/AdminDashboard";
 import BookManagement from "../components/BookManagement";
 import Catalog from "../components/Catalog";
-import MyBorrowedBooks from "../components/MyBorrowedBooks"; // ✅ fixed
+import MyBorrowedBooks from "../components/MyBorrowedBooks";
 import Users from "../components/Users";
+import AIChat from "../components/AIChat"; // ✅ import
 
 const Home = () => {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState("Dashboard"); // ✅ default
+  const [selectedComponent, setSelectedComponent] = useState("Dashboard");
 
   const { user, isAuthenticated } = useSelector((state) => state.auth || {});
 
-  
   if (!isAuthenticated) {
-  
- return <Navigate to={"/login"}/>;
+    return <Navigate to={"/login"} />;
   }
 
   return (
     <>
       <div className="relative md:p-1 flex min-h-screen bg-gray-100">
-        
+
+        {/* Mobile Menu */}
         <div className="md:hidden z-10 absolute right-6 top-4 flex justify-center items-center bg-black rounded-md h-9 w-9 text-white">
           <GiHamburgerMenu
-            className="text-2xl"   // ✅ fixed
+            className="text-2xl"
             onClick={() => setIsSideBarOpen(!isSideBarOpen)}
           />
         </div>
 
+        {/* Sidebar */}
         <Sidebar
           isSideBarOpen={isSideBarOpen}
           setIsSideBarOpen={setIsSideBarOpen}
@@ -41,6 +42,7 @@ const Home = () => {
           setSelectedComponent={setSelectedComponent}
         />
 
+        {/* Main Content */}
         {(() => {
           switch (selectedComponent) {
 
@@ -55,19 +57,18 @@ const Home = () => {
               return <BookManagement />;
 
             case "Catalog":
-              if (user?.role === "Admin") {
-                return <Catalog />;
-              }
+              if (user?.role === "Admin") return <Catalog />;
               return null;
 
             case "Users":
-              if (user?.role === "Admin") {
-                return <Users />;
-              }
+              if (user?.role === "Admin") return <Users />;
               return null;
 
             case "My Borrowed Books":
-              return <MyBorrowedBooks />; // ✅ fixed
+              return <MyBorrowedBooks />;
+
+            case "AI":  // ✅ ADD THIS
+              return <AIChat />;
 
             default:
               return user?.role === "User" ? (
@@ -77,6 +78,9 @@ const Home = () => {
               );
           }
         })()}
+        {/* 🤖 AI CHAT (IMPORTANT 🔥) */}
+        <AIChat />
+
       </div>
     </>
   );
