@@ -7,6 +7,7 @@ import {
   LogOut,
   Bot,
   Library,
+  Sparkles,
 } from "lucide-react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -45,26 +46,34 @@ const SideBar = ({
     dispatch(logout());
   };
 
-  // 🎯 reusable button
-  const MenuItem = ({ icon: Icon, label, value, onClick }) => {
+  // 🎯 MENU ITEM
+  const MenuItem = ({ icon: Icon, label, value }) => {
     const active = selectedComponent === value;
 
     return (
       <button
-        onClick={onClick}
-        className={`group w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300
+        onClick={() => setSelectedComponent(value)}
+        className={`group w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 relative overflow-hidden
         ${
           active
-            ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
+            ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-xl scale-[1.03]"
             : "text-gray-300 hover:bg-white/10 hover:text-white"
         }`}
       >
+        {/* glow effect */}
+        {active && (
+          <span className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 blur-xl"></span>
+        )}
+
         <Icon
-          className={`w-5 h-5 ${
-            active ? "text-white" : "text-gray-400 group-hover:text-white"
+          className={`w-5 h-5 relative z-10 ${
+            active
+              ? "text-white"
+              : "text-gray-400 group-hover:text-white"
           }`}
         />
-        <span className="font-medium">{label}</span>
+
+        <span className="font-medium relative z-10">{label}</span>
       </button>
     );
   };
@@ -72,13 +81,14 @@ const SideBar = ({
   return (
     <>
       <aside
-        className={`${
-          isSideBarOpen ? "left-0" : "-left-full"
-        } md:left-0 fixed z-20 w-64 h-full backdrop-blur-xl bg-black/80 border-r border-white/10 text-white flex flex-col transition-all duration-500`}
+        className={`${isSideBarOpen ? "left-0" : "-left-full"} 
+        md:left-0 fixed z-20 w-64 h-full glass text-white flex flex-col 
+        transition-all duration-500 shadow-2xl border-r border-white/10`}
       >
         {/* 🔥 LOGO */}
-        <div className="px-6 py-6 border-b border-white/10">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+        <div className="px-6 py-6 border-b border-white/10 flex items-center gap-2">
+          <Sparkles className="text-purple-400" />
+          <h1 className="text-xl font-bold gradient-text">
             Library AI
           </h1>
         </div>
@@ -90,47 +100,39 @@ const SideBar = ({
             icon={LayoutDashboard}
             label="Dashboard"
             value="Dashboard"
-            onClick={() => setSelectedComponent("Dashboard")}
           />
 
           <MenuItem
             icon={BookOpen}
             label="Books"
             value="Books"
-            onClick={() => setSelectedComponent("Books")}
           />
 
           <MenuItem
             icon={Library}
             label="Catalog"
             value="Catalog"
-            onClick={() => setSelectedComponent("Catalog")}
           />
 
           <MenuItem
             icon={Users}
             label="Users"
             value="Users"
-            onClick={() => setSelectedComponent("Users")}
           />
 
-          {/* 🤖 AI Assistant (NEW 🔥🔥🔥) */}
+          {/* 🤖 AI */}
           <MenuItem
             icon={Bot}
             label="AI Assistant"
             value="AI"
-            onClick={() => setSelectedComponent("AI")}
           />
 
-          {/* 👤 User Only */}
+          {/* 👤 USER */}
           {isAuthenticated && user?.role === "User" && (
             <MenuItem
               icon={Library}
               label="My Borrowed Books"
               value="My Borrowed Books"
-              onClick={() =>
-                setSelectedComponent("My Borrowed Books")
-              }
             />
           )}
 
@@ -142,11 +144,11 @@ const SideBar = ({
             onClick={() => dispatch(toggleSettingPopup())}
           />
 
-          {/* 👑 ADD ADMIN */}
+          {/* 👑 ADMIN BUTTON */}
           {user?.role === "Admin" && (
             <button
               onClick={() => dispatch(toggleAddNewAdminPopup())}
-              className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-semibold hover:scale-105 transition"
+              className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-semibold hover:scale-105 transition shadow-lg"
             >
               + Add Admin
             </button>
@@ -157,7 +159,7 @@ const SideBar = ({
         <div className="p-4 border-t border-white/10">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-red-500/90 hover:bg-red-600 transition"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-red-500/90 hover:bg-red-600 transition shadow-lg"
           >
             <LogOut className="w-5 h-5" />
             Logout

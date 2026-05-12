@@ -1,12 +1,93 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* 🔧 RESET */
 * {
-  font-family: "Montserrat", serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-  overflow-x: hidden;
+  font-family: "Montserrat", sans-serif;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
+/* 🌌 FULL HEIGHT */
+html, body, #root {
+  height: 100%;
+}
+
+/* 🌈 BACKGROUND (DEEP PREMIUM) */
+body {
+  background: radial-gradient(circle at 20% 20%, #1e1b4b, #020617 70%);
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* 🧊 GLASS MORPHISM */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* 🌈 GRADIENT TEXT */
+.gradient-text {
+  background: linear-gradient(90deg, #a855f7, #3b82f6, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 💎 GLOW EFFECT */
+.glow {
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.6),
+              0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+/* 🚀 HOVER CARD EFFECT */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+}
+
+/* 🔘 PREMIUM BUTTON */
+.btn-premium {
+  background: linear-gradient(135deg, #9333ea, #2563eb);
+  color: rgb(244, 233, 233);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.btn-premium:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.7);
+}
+
+/* 🧠 AI CHAT UI */
+.chat-user {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  padding: 10px 14px;
+  border-radius: 12px 12px 0 12px;
+}
+
+.chat-ai {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 10px 14px;
+  border-radius: 12px 12px 12px 0;
+}
+
+/* ⚡ GLOBAL SMOOTHNESS */
+* {
+  transition: all 0.25s ease-in-out;
+}
+
+/* .text-white {
+  color: rgb(32, 4, 4) !important;
+} */

@@ -44,42 +44,40 @@ const Home = () => {
 
         {/* Main Content */}
         {(() => {
-          switch (selectedComponent) {
+  switch (selectedComponent) {
 
-            case "Dashboard":
-              return user?.role === "User" ? (
-                <UserDashboard />
-              ) : (
-                <AdminDashboard />
-              );
+    case "Dashboard":
+      return user?.role === "User" ? (
+        <UserDashboard />
+      ) : (
+        <AdminDashboard />
+      );
 
-            case "Books":
-              return <BookManagement />;
+    case "Books":
+      return <BookManagement />;
 
-            case "Catalog":
-              if (user?.role === "Admin") return <Catalog />;
-              return null;
+    case "Catalog":
+      return <Catalog />;
 
-            case "Users":
-              if (user?.role === "Admin") return <Users />;
-              return null;
+    case "Users":
+      return <Users />;
 
-            case "My Borrowed Books":
-              return <MyBorrowedBooks />;
+    case "AI":
+      return <AIChat />;   // 🔥 yaha add karna hai
 
-            case "AI":  // ✅ ADD THIS
-              return <AIChat />;
+    case "My Borrowed Books":
+      return <MyBorrowedBooks />;
 
-            default:
-              return user?.role === "User" ? (
-                <UserDashboard />
-              ) : (
-                <AdminDashboard />
-              );
-          }
-        })()}
-        {/* 🤖 AI CHAT (IMPORTANT 🔥) */}
-        <AIChat />
+    default:
+      return user?.role === "User" ? (
+        <UserDashboard />
+      ) : (
+        <AdminDashboard />
+      );
+  }
+})()}
+        {/* 🤖 AI CHAT (IMPORTANT 🔥)
+        <AIChat /> */}
 
       </div>
     </>
