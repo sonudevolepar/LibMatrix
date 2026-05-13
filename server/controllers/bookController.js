@@ -1,5 +1,7 @@
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import { Book } from "../models/bookModel.js";
+import { User } from "../models/userModel.js";
+import { Borrow } from "../models/borrowModel.js";
 import ErrorHandler from "../middlewares/errorMiddlewares.js";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -7,9 +9,6 @@ import { v2 as cloudinary } from "cloudinary";
 
 export const addBook = catchAsyncErrors(
   async (req, res, next) => {
-
-    console.log(req.body);
-    console.log(req.file);
 
     const {
       title,
@@ -19,7 +18,6 @@ export const addBook = catchAsyncErrors(
       quantity,
     } = req.body;
 
-    // VALIDATION
     if (
       !title ||
       !author ||
@@ -35,7 +33,6 @@ export const addBook = catchAsyncErrors(
       );
     }
 
-    // IMAGE CHECK
     if (!req.file) {
       return next(
         new ErrorHandler(
@@ -45,7 +42,6 @@ export const addBook = catchAsyncErrors(
       );
     }
 
-    // CLOUDINARY UPLOAD
     const result = await cloudinary.uploader.upload(
       req.file.path,
       {
@@ -53,15 +49,14 @@ export const addBook = catchAsyncErrors(
       }
     );
 
-    console.log(result);
-      
-    // CREATE BOOK
     const book = await Book.create({
       title,
       author,
       description,
       price,
       quantity,
+
+      availability: quantity > 0,
 
       bookImage: {
         public_id: result.public_id,
@@ -109,7 +104,6 @@ export const deleteBook = catchAsyncErrors(
       );
     }
 
-    // cloudinary image delete
     if (book.bookImage?.public_id) {
 
       await cloudinary.uploader.destroy(
@@ -123,6 +117,116 @@ export const deleteBook = catchAsyncErrors(
     res.status(200).json({
       success: true,
       message: "Book deleted successfully",
+    });
+  }
+);
+
+// ================= BORROW BOOK =================
+
+export const borrowBook = catchAsyncErrors(
+  async (req, res, next) => {
+
+    const book = await Book.findById(
+      req.params.id
+    );
+
+    if (!book) {
+      return next(
+        new ErrorHandler(
+          "Book not found",
+          404
+        )
+      );
+    }
+
+    if (book.quantity <= 0) {
+      return next(
+        new ErrorHandler(
+          "Book not available",
+          400
+        )
+      );
+    }
+
+    const user = await User.findById(req.user.id);
+
+    const dueDate = new Date();
+
+    dueDate.setDate(
+      dueDate.getDate() + 7
+    );
+
+    await Borrow.create({
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      book: book._id,
+      dueDate,
+      borrowDate: new Date(),
+    });
+
+    user.borrowedBooks.push({
+      bookId: book._id,
+      bookTitle: book.title,
+      borrowedDate: new Date(),
+      dueDate,
+      returned: false,
+    });
+
+    await user.save();
+
+    book.quantity -= 1;
+
+    if (book.quantity === 0) {
+      book.availability = false;
+    }
+
+    await book.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Book borrowed successfully",
+    });
+  }
+);
+
+// ================= RETURN BOOK =================
+
+export const returnBook = catchAsyncErrors(
+  async (req, res, next) => {
+
+    const borrow = await Borrow.findById(
+      req.params.id
+    );
+
+    if (!borrow) {
+      return next(
+        new ErrorHandler(
+          "Borrow record not found",
+          404
+        )
+      );
+    }
+
+    const book = await Book.findById(
+      borrow.book
+    );
+
+    if (book) {
+      book.quantity += 1;
+      book.availability = true;
+      await book.save();
+    }
+
+    borrow.returnDate = new Date();
+
+    await borrow.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Book returned successfully",
     });
   }
 );

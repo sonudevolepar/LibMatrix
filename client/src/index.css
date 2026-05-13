@@ -20,7 +20,7 @@ html, body, #root {
 /* 🌈 BACKGROUND (DEEP PREMIUM) */
 body {
   background: radial-gradient(circle at 20% 20%, #1e1b4b, #020617 70%);
-  color: #ffffff;
+  /* color: #ffffff; */
   overflow-x: hidden;
 }
 
@@ -86,6 +86,10 @@ body {
 /* ⚡ GLOBAL SMOOTHNESS */
 * {
   transition: all 0.25s ease-in-out;
+}
+.text-black {
+    --tw-text-opacity: 1;
+    color: rgb(0 0 0 / var(--tw-text-opacity, 1));
 }
 
 /* .text-white {

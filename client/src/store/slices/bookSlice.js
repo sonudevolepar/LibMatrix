@@ -4,73 +4,78 @@ import { toast } from "react-toastify";
 
 const API = "http://localhost:4000/api/v1/book";
 
+const initialState = {
+  books: [],
+  singleBook: null,
+  loading: false,
+  error: null,
+};
+
 const bookSlice = createSlice({
   name: "book",
-  initialState: {
-    books: [],
-    singleBook: null,   // 🔥 NEW
-    loading: false,
-    error: null,
-  },
+  initialState,
 
   reducers: {
-    // 🔹 FETCH ALL
-    fetchBooksRequest(state) {
+    // 🔄 COMMON REQUEST
+    request(state) {
       state.loading = true;
+      state.error = null;
     },
-    fetchBooksSuccess(state, action) {
-      state.loading = false;
-      state.books = action.payload;
-    },
-    fetchBooksFailed(state, action) {
+
+    // ❌ COMMON ERROR
+    failed(state, action) {
       state.loading = false;
       state.error = action.payload;
     },
 
-    // 🔹 FETCH SINGLE
+    // 📚 FETCH ALL BOOKS
+    fetchBooksSuccess(state, action) {
+      state.loading = false;
+      state.books = action.payload;
+    },
+
+    // 📘 SINGLE BOOK
     fetchSingleBookSuccess(state, action) {
       state.loading = false;
       state.singleBook = action.payload;
     },
 
-    // 🔹 ADD
-    addBookRequest(state) {
-      state.loading = true;
-    },
+    // ➕ ADD BOOK
     addBookSuccess(state) {
       state.loading = false;
     },
-    addBookFailed(state) {
-      state.loading = false;
-    },
 
-    // 🔹 DELETE
-    deleteBookRequest(state) {
-      state.loading = true;
-    },
+    // ❌ DELETE BOOK
     deleteBookSuccess(state, action) {
       state.loading = false;
       state.books = state.books.filter(
         (book) => book._id !== action.payload
       );
     },
-    deleteBookFailed(state) {
-      state.loading = false;
-    },
 
-    // 🔹 BORROW BOOK (NEW 🔥)
+    // 📥 BORROW
     borrowBookSuccess(state, action) {
-      const book = state.books.find(b => b._id === action.payload);
-      if (book) book.available = false;
+
+      const book = state.books.find(
+        (b) => b._id === action.payload
+      );
+
+      if (book) {
+        book.availability = false;
+      }
     },
 
-    // 🔹 RETURN BOOK (NEW 🔥)
     returnBookSuccess(state, action) {
-      const book = state.books.find(b => b._id === action.payload);
-      if (book) book.available = true;
+
+      const book = state.books.find(
+        (b) => b._id === action.payload
+      );
+
+      if (book) {
+        book.availability = true;
+      }
     },
 
-    // 🔹 RESET
     clearError(state) {
       state.error = null;
     },
@@ -83,16 +88,20 @@ const bookSlice = createSlice({
 // ============================
 export const fetchBooks = () => async (dispatch) => {
   try {
-    dispatch(bookSlice.actions.fetchBooksRequest());
+    dispatch(bookSlice.actions.request());
 
     const res = await axios.get(`${API}/all`, {
       withCredentials: true,
     });
 
-    dispatch(bookSlice.actions.fetchBooksSuccess(res.data.books));
+    dispatch(
+      bookSlice.actions.fetchBooksSuccess(
+        res.data.books
+      )
+    );
   } catch (err) {
     dispatch(
-      bookSlice.actions.fetchBooksFailed(
+      bookSlice.actions.failed(
         err.response?.data?.message || "Error"
       )
     );
@@ -105,14 +114,19 @@ export const fetchBooks = () => async (dispatch) => {
 // ============================
 export const fetchSingleBook = (id) => async (dispatch) => {
   try {
-    dispatch(bookSlice.actions.fetchBooksRequest());
+    dispatch(bookSlice.actions.request());
 
     const res = await axios.get(`${API}/${id}`);
 
     dispatch(
-      bookSlice.actions.fetchSingleBookSuccess(res.data.book)
+      bookSlice.actions.fetchSingleBookSuccess(
+        res.data.book
+      )
     );
   } catch (err) {
+    dispatch(
+      bookSlice.actions.failed("Failed to load book")
+    );
     toast.error("Failed to load book");
   }
 };
@@ -123,7 +137,7 @@ export const fetchSingleBook = (id) => async (dispatch) => {
 // ============================
 export const addBook = (data) => async (dispatch) => {
   try {
-    dispatch(bookSlice.actions.addBookRequest());
+    dispatch(bookSlice.actions.request());
 
     const res = await axios.post(
       `${API}/admin/add`,
@@ -137,16 +151,17 @@ export const addBook = (data) => async (dispatch) => {
     );
 
     dispatch(bookSlice.actions.addBookSuccess());
-
     toast.success(res.data.message);
 
+    // 🔄 refresh list
     dispatch(fetchBooks());
 
   } catch (error) {
-
-    console.log(error.response?.data);
-
-    dispatch(bookSlice.actions.addBookFailed());
+    dispatch(
+      bookSlice.actions.failed(
+        error.response?.data?.message || "Error"
+      )
+    );
 
     toast.error(
       error.response?.data?.message || "Error"
@@ -154,34 +169,30 @@ export const addBook = (data) => async (dispatch) => {
   }
 };
 
+
 // ============================
 // ❌ DELETE BOOK
 // ============================
 export const deleteBook = (id) => async (dispatch) => {
-
   try {
+    dispatch(bookSlice.actions.request());
 
-    dispatch(
-      bookSlice.actions.deleteBookRequest()
-    );
-
-    const { data } = await axios.delete(
+    const res = await axios.delete(
       `${API}/delete/${id}`,
-      {
-        withCredentials: true,
-      }
+      { withCredentials: true }
     );
 
     dispatch(
       bookSlice.actions.deleteBookSuccess(id)
     );
 
-    toast.success(data.message);
+    toast.success(res.data.message);
 
   } catch (error) {
-
     dispatch(
-      bookSlice.actions.deleteBookFailed()
+      bookSlice.actions.failed(
+        error.response?.data?.message || "Delete failed"
+      )
     );
 
     toast.error(
@@ -203,10 +214,19 @@ export const borrowBook = (id) => async (dispatch) => {
       { withCredentials: true }
     );
 
-    dispatch(bookSlice.actions.borrowBookSuccess(id));
+    dispatch(
+      bookSlice.actions.borrowBookSuccess(id)
+    );
+
     toast.success(res.data.message || "Book borrowed");
+
+    // 🔄 optional refresh
+    dispatch(fetchBooks());
+
   } catch (err) {
-    toast.error(err?.response?.data?.message || "Error");
+    toast.error(
+      err?.response?.data?.message || "Error"
+    );
   }
 };
 
@@ -222,10 +242,19 @@ export const returnBook = (id) => async (dispatch) => {
       { withCredentials: true }
     );
 
-    dispatch(bookSlice.actions.returnBookSuccess(id));
+    dispatch(
+      bookSlice.actions.returnBookSuccess(id)
+    );
+
     toast.success(res.data.message || "Book returned");
+
+    // 🔄 optional refresh
+    dispatch(fetchBooks());
+
   } catch (err) {
-    toast.error(err?.response?.data?.message || "Error");
+    toast.error(
+      err?.response?.data?.message || "Error"
+    );
   }
 };
 
