@@ -27,7 +27,7 @@ dbConnection();
 // CORS
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL],
+    origin: ["http://localhost:5173", "https://soft-longma-1c8d86.netlify.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
