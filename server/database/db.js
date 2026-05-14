@@ -2,13 +2,12 @@ import mongoose from "mongoose";
 
 
 export const dbConnection = () => {
-  mongoose.connect(process.env.MONGO_URI, {
-    dbName: "MERN_STACK_LIBRARY",
-  })
-  .then(() => {
-    console.log("Database connected successfully");
-  })
-  .catch((err) => {
-    console.log("Error connecting to database", err);
-  });
+  try {
+    await mongodb.connect(process.env.MONGO_URI);
+    console.log("connection successfull to DB");
+  } catch (error) {
+    console.error(error);
+    console.error("connection failed to db");
+    process.exit(0);
+  }
 };
