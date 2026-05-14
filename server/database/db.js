@@ -1,13 +1,23 @@
 import mongoose from "mongoose";
 
-
-export const dbConnection = () => {
+export const dbConnection = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("connection successfull to DB");
+
+    mongoose.set("bufferCommands", false);
+
+    await mongoose.connect(process.env.MONGO_URI, {
+      dbName: "MERN_STACK_LIBRARY",
+      serverSelectionTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
+    });
+
+    console.log("Connection successful to DB");
+
   } catch (error) {
+
+    console.error("Connection failed to DB");
     console.error(error);
-    console.error("connection failed to db");
-    process.exit(0);
+
+    process.exit(1);
   }
 };
