@@ -47,7 +47,7 @@ export const {
   resetAuthSlice,
 } = authSlice.actions;
 
-const API = "http://localhost:4000/api/v1/auth";
+const API = "https://libmatrix.onrender.com/api/v1/auth";
 
 
 // 🔵 REGISTER
@@ -99,7 +99,7 @@ export const forgotPassword = (email) => async (dispatch) => {
   try {
     dispatch(request());
 
-    const res = await axios.post("http://localhost:4000/api/v1/auth/password/forgot", {
+    const res = await axios.post("https://libmatrix.onrender.com/api/v1/auth/password/forgot", {
       email: email,   // ✅ correct
     });
 
@@ -114,7 +114,7 @@ export const forgotPassword = (email) => async (dispatch) => {
 export const verifyOTP = (data) => async (dispatch) => {
   try {
     const res = await axios.post(
-      "http://localhost:4000/api/v1/auth/verify-otp",
+      "https://libmatrix.onrender.com/api/v1/auth/verify-otp",
       data,
       { withCredentials: true }
     );
@@ -164,7 +164,7 @@ export const getUser = () => async (dispatch) => {
     dispatch(request());
 
     const res = await axios.get(
-      "http://localhost:4000/api/v1/auth/me",
+      "https://libmatrix.onrender.com/api/v1/auth/me",
       { withCredentials: true }
     );
 
@@ -178,7 +178,7 @@ export const getUser = () => async (dispatch) => {
 
 // export const logout = () => async (dispatch) => {
 //   try {
-//     await axios.get("http://localhost:4000/api/v1/auth/logout", {
+//     await axios.get("https://libmatrix.onrender.com/api/v1/auth/logout", {
 //       withCredentials: true,
 //     });
 

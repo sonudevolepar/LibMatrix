@@ -47,7 +47,7 @@ const AIChat = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/v1/ai/chat",
+        "https://libmatrix.onrender.com/api/v1/ai/chat",
         {
           message: userInput,
         }

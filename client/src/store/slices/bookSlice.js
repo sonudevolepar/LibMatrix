@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const API = "http://localhost:4000/api/v1/book";
+const API = "https://libmatrix.onrender.com/api/v1/book";
 
 const initialState = {
   books: [],
