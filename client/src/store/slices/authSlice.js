@@ -51,48 +51,73 @@ const API = "https://libmatrix.onrender.com/api/v1/auth";
 
 
 // 🔵 REGISTER
-export const register = (formData) => async (dispatch) => {
+export const register = (data) => async (dispatch) => {
   try {
+
     dispatch(request());
 
-    const res = await axios.post(`${API}/register`, formData, {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
       withCredentials: true,
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    };
+
+    const res = await axios.post(
+      `${API}/register`,
+      data,
+      config
+    );
 
     dispatch(success(res.data));
 
-    // 🔥 IMPORTANT
-    return res.data;
-
   } catch (error) {
+
+    console.log(error.response?.data);
 
     dispatch(
       failed(
-        error.response?.data?.message || "Register failed"
+        error.response?.data?.message ||
+        "Register failed"
       )
     );
-
-    return error.response?.data;
   }
 };
-
-
 // 🔵 LOGIN
 export const login = (data) => async (dispatch) => {
   try {
+
     dispatch(request());
 
-    const res = await axios.post(`${API}/login`, data, {
-      withCredentials: true,
-    });
+    console.log("LOGIN DATA:", data);
+
+    const res = await axios.post(
+      `${API}/login`,
+      data,
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log("LOGIN SUCCESS:", res.data);
 
     dispatch(success(res.data));
+
   } catch (error) {
-    dispatch(failed(error.response?.data?.message || "Login failed"));
+
+    console.log(
+      "LOGIN ERROR:",
+      error.response?.data
+    );
+
+    dispatch(
+      failed(
+        error.response?.data?.message ||
+        "Login failed"
+      )
+    );
   }
 };
-
 
 // 🔵 FORGOT PASSWORD
 export const forgotPassword = (email) => async (dispatch) => {
