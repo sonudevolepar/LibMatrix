@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/black-logo.png";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -25,40 +25,31 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    try {
-      const data = {
-        name,
-        email,
-        password,
-      };
+    console.log("REGISTER CLICKED");
 
-      // 🔥 REGISTER API
-      // const response = await dispatch(register(data));
+    const data = {
+      name: name.trim(),
+      email: email.trim(),
+      password: password.trim(),
+    };
 
-      // console.log(response);
+    console.log("REGISTER DATA:", data);
 
-      // // 🔥 OTP PAGE REDIRECT
-      // if (response?.success) {
-      //   navigateTo(`/otp/${email}`);
-      // }
-
-      const response = await dispatch(register(data));
-
-if (response?.success) {
-  navigateTo(`/otp/${email}`);
-}
-
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(register(data));
   };
+
+  // ================= REDIRECT =================
+
+  useEffect(() => {
+    if (message) {
+      navigateTo(`/otp/${email}`);
+    }
+  }, [message]);
 
   return (
     <div style={styles.container}>
 
       <div style={styles.card}>
-
-        {/* LOGO */}
 
         <img
           src={logo}
@@ -70,14 +61,10 @@ if (response?.success) {
           Register
         </h2>
 
-        {/* FORM */}
-
         <form
           onSubmit={handleRegister}
           style={styles.form}
         >
-
-          {/* NAME */}
 
           <input
             type="text"
@@ -90,8 +77,6 @@ if (response?.success) {
             style={styles.input}
           />
 
-          {/* EMAIL */}
-
           <input
             type="email"
             placeholder="Enter Email"
@@ -103,8 +88,6 @@ if (response?.success) {
             style={styles.input}
           />
 
-          {/* PASSWORD */}
-
           <input
             type="password"
             placeholder="Enter Password"
@@ -115,8 +98,6 @@ if (response?.success) {
             required
             style={styles.input}
           />
-
-          {/* BUTTON */}
 
           <button
             type="submit"
@@ -130,15 +111,11 @@ if (response?.success) {
 
         </form>
 
-        {/* ERROR */}
-
         {error && (
           <p style={styles.error}>
             {error}
           </p>
         )}
-
-        {/* SUCCESS */}
 
         {message && (
           <p style={styles.success}>
@@ -156,7 +133,6 @@ export default Register;
 // ================= CSS =================
 
 const styles = {
-
   container: {
     height: "100vh",
     display: "flex",
